@@ -349,19 +349,19 @@ var Radar = {
         }
         if(lock.getValue()){
             if(Target_Index == -1){
-                lock = 0;
+                lock.setValue(0);
                 return;
             }
             if(size(tgts_list)-1 < Target_Index){
-                lock=0;
+                lock.setValue(0);
                 #Target_Index=-1;
                 return;
             }elsif(tgts_list[Target_Index] == nil){
-                lock=0;
+                lock.setValue(0);
                 #Target_Index=-1;
                 return;
             }elsif(!(tgts_list[Target_Index].Display != nil) or !tgts_list[Target_Index].Display.getValue()){
-                lock=0;
+                lock.setValue(0);
                 #Target_Index=-1;
             }
         }

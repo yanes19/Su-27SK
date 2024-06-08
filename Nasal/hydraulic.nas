@@ -1,6 +1,6 @@
 ############################################
 # CUSTOM HYDRAULIC SYSTEM FOR SU-27SK
-# BY Wang Jianlin (Developer0607, Ghost)
+# BY Ghost
 ############################################
 
 var MAXSPEED = 0;
@@ -29,7 +29,7 @@ Rudout.setValue(0);
 Rudlast.setValue(0);
 
 var loop=func{
-    MAXSPEED = math.min(6.283, getprop("/systems/hydraulic/pump/pressure") * 0.07654);
+    MAXSPEED = math.min(3.142, getprop("/systems/hydraulic/pump/pressure") * 0.07654);
     var time=getprop("/sim/time/elapsed-sec");
     if(getprop("/systems/hydraulic/pump/pressure")>30){
         var rmax=MAXSPEED*(time-dt);
@@ -134,3 +134,7 @@ loop();
 setlistener("/controls/ctrl/gear-down",gearlistener);
 setlistener("/controls/ctrl/flaps",flapslistener);
 setlistener("/controls/ctrl/airbrk",airbrklistener);
+
+setlistener("/systems/hydraulic/pump/pressure",gearlistener);
+setlistener("/systems/hydraulic/pump/pressure",flapslistener);
+setlistener("/systems/hydraulic/pump/pressure",airbrklistener);
