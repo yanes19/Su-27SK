@@ -187,7 +187,7 @@
     <name>R-27R</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27R/R-27R.xml</path>
     <offsets>
-      <x-m> 14.000 </x-m>
+      <x-m> 13.400 </x-m>
       <y-m> -4.836 </y-m>
       <z-m> -0.24 </z-m>
     </offsets>
@@ -223,7 +223,7 @@
     <name>R-27ER</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27ER/R-27ER.xml</path>
     <offsets>
-      <x-m> 14.000 </x-m>
+      <x-m> 13.400 </x-m>
       <y-m> -4.836 </y-m>
       <z-m> -0.24 </z-m>
     </offsets>
@@ -251,7 +251,7 @@
     <name>R-27R</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27R/R-27R.xml</path>
     <offsets>
-      <x-m> 14.000 </x-m>
+      <x-m> 13.400 </x-m>
       <y-m> 4.836 </y-m>
       <z-m> -0.24 </z-m>
     </offsets>
@@ -287,7 +287,7 @@
     <name>R-27ER</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27ER/R-27ER.xml</path>
     <offsets>
-      <x-m> 14.000 </x-m>
+      <x-m> 13.400 </x-m>
       <y-m> 4.836 </y-m>
       <z-m> -0.24 </z-m>
     </offsets>
@@ -316,7 +316,7 @@
     <name>R-27R</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27R/R-27R.xml</path>
     <offsets>
-      <x-m> 14.800 </x-m>
+      <x-m> 14.600 </x-m>
       <y-m> -6.490 </y-m>
       <z-m> -0.02 </z-m>
     </offsets>
@@ -352,7 +352,7 @@
     <name>R-27ER</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27ER/R-27ER.xml</path>
     <offsets>
-      <x-m> 14.800 </x-m>
+      <x-m> 14.600 </x-m>
       <y-m> -6.490 </y-m>
       <z-m> -0.02 </z-m>
     </offsets>
@@ -406,7 +406,7 @@
     <name>R-27R</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27R/R-27R.xml</path>
     <offsets>
-      <x-m> 14.800 </x-m>
+      <x-m> 14.600 </x-m>
       <y-m> 6.490 </y-m>
       <z-m> -0.02 </z-m>
     </offsets>
@@ -442,7 +442,7 @@
     <name>R-27ER</name>
     <path>Aircraft/SU-27SK/Models/Stores/Missiles/R-27ER/R-27ER.xml</path>
     <offsets>
-      <x-m> 14.800 </x-m>
+      <x-m> 14.600 </x-m>
       <y-m> 6.490 </y-m>
       <z-m> -0.02 </z-m>
     </offsets>
