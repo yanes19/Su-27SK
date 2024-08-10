@@ -833,7 +833,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Nose_Lower_Strut</object-name>
     <property>gear/gear[0]/compression-norm</property>
-	<factor>0.14</factor>
+	<factor>0.10</factor>
     <axis>
       <x>0.1007</x>
       <y>0</y>
@@ -904,15 +904,15 @@ livery_update.stop();
       </entry>
       <entry>
         <ind>0.3333</ind>
-        <dep>-26</dep>
+        <dep>-10</dep>
       </entry>
       <entry>
         <ind>0.6666</ind>
-        <dep>-42</dep>
+        <dep>-20</dep>
       </entry>
       <entry>
         <ind>1.0</ind>
-        <dep>-56</dep>
+        <dep>-30</dep>
       </entry>
     </interpolation>
     <center>
@@ -1290,7 +1290,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Left_Hub</object-name>
     <property>gear/gear[1]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
@@ -1399,7 +1399,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Left_Tyre</object-name>
     <property>gear/gear[1]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
@@ -1990,7 +1990,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Right_Hub</object-name>
     <property>gear/gear[2]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
