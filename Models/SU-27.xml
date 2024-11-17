@@ -255,7 +255,7 @@ fadeWhite = lightFadeInOut.new(whiteSwitch, lightsPath~"white-light-intensity");
       
 </load>
 <unload>
- stopFire();
+ #stopFire();
       disintegrated = 0;
       removelistener(listenCrash);
       
@@ -369,7 +369,7 @@ livery_update.stop();
 		<path>Aircraft/SU-27SK/Models/Interior/panel.xml</path>
 			<offsets>
 				<x-m>0.3</x-m>
-				<y-m>-0.01</y-m>
+					<y-m>-0.01</y-m>
 				<z-m>-0.03</z-m>
 			<pitch-deg>0</pitch-deg>
 		</offsets>
@@ -833,7 +833,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Nose_Lower_Strut</object-name>
     <property>gear/gear[0]/compression-norm</property>
-	<factor>0.14</factor>
+	<factor>0.10</factor>
     <axis>
       <x>0.1007</x>
       <y>0</y>
@@ -904,15 +904,15 @@ livery_update.stop();
       </entry>
       <entry>
         <ind>0.3333</ind>
-        <dep>-26</dep>
+        <dep>-10</dep>
       </entry>
       <entry>
         <ind>0.6666</ind>
-        <dep>-42</dep>
+        <dep>-20</dep>
       </entry>
       <entry>
         <ind>1.0</ind>
-        <dep>-56</dep>
+        <dep>-30</dep>
       </entry>
     </interpolation>
     <center>
@@ -1290,7 +1290,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Left_Hub</object-name>
     <property>gear/gear[1]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
@@ -1399,7 +1399,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Left_Tyre</object-name>
     <property>gear/gear[1]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
@@ -1990,7 +1990,7 @@ livery_update.stop();
 	<type>translate</type>
 	<object-name>UC_Main_Right_Hub</object-name>
     <property>gear/gear[2]/compression-norm</property>
-	<factor>0.8</factor>
+	<factor>0.5</factor>
     <axis>
       <x>0</x>
       <y>0</y>
@@ -2808,10 +2808,10 @@ livery_update.stop();
   
   <!-- Impact fire -->
   <model>
-  <path>Aircraft/SU-27SK/Models/Effects/Explosion/ImpactFire.xml</path>
+  <path>Aircraft/SU-27SK/Models/Effects/DamageSmoke/explosion.xml</path>
   <condition>
     <equals>
-      <property>sim/multiplay/generic/int[7]</property>
+      <property>sim/multiplay/generic/bool[1]</property>
       <value>1</value>
     </equals>
   </condition>
@@ -2868,6 +2868,10 @@ livery_update.stop();
    <y-m> 0.0 </y-m>
    <z-m> 0.0 </z-m>
   </offsets>
+ </model>
+
+ <model>
+  <path>Aircraft/SU-27SK/Models/Effects/DamageSmoke/damage-smoke.xml</path>
  </model>
 
 

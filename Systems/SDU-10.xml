@@ -87,8 +87,14 @@
 	    <table>
 		    <independentVar>/su-27/instrumentation/ASI/airspeed-kmh</independentVar>
 		    <tableData>
-		    300    0.01
-		    800    0.07
+            100    0.001
+		    200    0.003
+            300    0.007
+            400    0.011
+            500    0.018
+            600    0.025
+            700    0.033
+		    800    0.05
 		    1200   0.10
 		    1600   0.12
 		    </tableData>
