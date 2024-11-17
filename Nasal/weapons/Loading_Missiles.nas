@@ -350,7 +350,7 @@ var Loading_missile = func(name)
     }
     else
     {
-        return 0;
+        return 1;
     }
     # SetProp
     setprop("controls/armament/missile/address", address);

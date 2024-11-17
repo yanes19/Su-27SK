@@ -1276,4 +1276,21 @@
         </tacview>
 
     </nasal>
+    <autopilot>
+        <serviceable type="bool" alias="/systems/electrical/VDC-bus[1]"/>
+        <master-switch type="bool">false</master-switch>
+        <output>
+            <flight>
+                <elevator type="double">0</elevator>
+                <l-aileron type="double">0</l-aileron>
+                <r-aileron type="double">0</r-aileron>
+            </flight>
+            <AT>
+                <throttle type="double">0</throttle>
+            </AT>
+        </output>
+        <set>
+            <mode>0</mode>
+        </set>
+    </autopilot>
 </PropertyList>

@@ -232,12 +232,13 @@ var HUD = {
 #	print ("SEE hud");
 		}
 		
-    me.airspeed.setText(sprintf("%d", me.input.ias.getValue()/10)~"0");
+    #me.airspeed.setText(sprintf("%d", me.input.ias.getValue()/10)~"0"); Why /10???
+    me.airspeed.setText(sprintf("%02d", me.input.ias.getValue()));
     me.altitude.setText( me.input.altitude.getValue());
     if (me.input.target_spd.getValue()!= nil){
-    me.APairspeed.setText(sprintf("%2d", Kts2KmH(me.input.target_spd.getValue())/10)~"0");}
+    me.APairspeed.setText(sprintf("%02d", Kts2KmH(me.input.target_spd.getValue())/10)~"0");}
     if(me.input.target_alt.getValue()!= nil){
-    me.APaltitude.setText(sprintf("%2d", ft2m(me.input.target_alt.getValue())/10)~"0");}
+    me.APaltitude.setText(sprintf("%02d", ft2m(me.input.target_alt.getValue())/10)~"0");}
 
 
     me.HdgScale.setTranslation(0, me.input.hdg.getValue()/180);

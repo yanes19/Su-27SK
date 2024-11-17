@@ -138,3 +138,7 @@ setlistener("/controls/ctrl/airbrk",airbrklistener);
 setlistener("/systems/hydraulic/pump/pressure",gearlistener);
 setlistener("/systems/hydraulic/pump/pressure",flapslistener);
 setlistener("/systems/hydraulic/pump/pressure",airbrklistener);
+
+var APListener = func{
+    if(getprop("/autopilot/master-switch"))
+}
