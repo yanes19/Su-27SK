@@ -10,6 +10,7 @@ var Kts2KmH = func(x){if(x!= nil){return x * 1.85283} else {return 0} };
 var KmH2Kts = func(x){return x * 0.53995};
 var ft2m = func(x){if(x!= nil){return x * 0.3048}else {return 0}};
 var m2ft = func(x){return x * 3.2808};
+var OurRoll           = props.globals.getNode("orientation/roll-deg");
 var HUD = {
   canvas_settings: {
     "name": "HUD",
@@ -68,6 +69,8 @@ var HUD = {
     m.tgt8Marker = m.get_element("tgt8-marker");
     m.tgt9Marker = m.get_element("tgt9-marker");
     m.tgt10Marker = m.get_element("tgt10-marker");
+    m.lockMarker = m.get_element("lock-marker");
+    #m.targetDistance = m.get_element("target-distance");
   
     #########################################    
     m.text =
@@ -75,7 +78,11 @@ var HUD = {
             .set("fill", "rgba(0,255,0,0.9)");
         
 
-
+    m.targetDistance =
+      m.text.createChild("text")
+            .setAlignment("center-top")
+            .setTranslation(220, 180)
+            .setFontSize(12,1.5);
  #Coordinares are from top left .setTranslation(left,Top)
     # Airspeed
     m.airspeed =
@@ -230,12 +237,13 @@ var HUD = {
 #	print ("SEE hud");
 		}
 		
-    me.airspeed.setText(sprintf("%d", me.input.ias.getValue()/10)~"0");
+    #me.airspeed.setText(sprintf("%d", me.input.ias.getValue()/10)~"0"); Why /10???
+    me.airspeed.setText(sprintf("%02d", me.input.ias.getValue()));
     me.altitude.setText( me.input.altitude.getValue());
     if (me.input.target_spd.getValue()!= nil){
-    me.APairspeed.setText(sprintf("%2d", Kts2KmH(me.input.target_spd.getValue())/10)~"0");}
+    me.APairspeed.setText(sprintf("%02d", Kts2KmH(me.input.target_spd.getValue())/10)~"0");}
     if(me.input.target_alt.getValue()!= nil){
-    me.APaltitude.setText(sprintf("%2d", ft2m(me.input.target_alt.getValue())/10)~"0");}
+    me.APaltitude.setText(sprintf("%02d", ft2m(me.input.target_alt.getValue())/10)~"0");}
 
 
     me.HdgScale.setTranslation(0, me.input.hdg.getValue()/180);
@@ -312,98 +320,307 @@ var HUD = {
 			me.tgt8Marker.setVisible(0);
 			me.tgt9Marker.setVisible(0);
 			me.tgt10Marker.setVisible(0);
+      me.lockMarker.setVisible(0);
 		}
 		if (radarON == 0){me.Rdr_Indicator.setVisible(0);}else {me.Rdr_Indicator.setVisible(1);}
 		
+#**************LOCK MARKER *********************#
+		if(radar.GetTarget() != nil){
+      var target1_x = radar.tgts_list[radar.Target_Index].TgtsFiles.getNode("h-offset",1).getValue();
+      var target1_z = radar.tgts_list[radar.Target_Index].TgtsFiles.getNode("v-offset",1).getValue();
+      if (target1_x or 0 > 0 and radarON ==1)
+      {
+        var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+        var oriAngle = math.asin(target1_x / dist_O);
+        if(target1_z < 0){
+          oriAngle = 3.141592654 - oriAngle;
+        }
+        var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+        target1_x = dist_O * math.sin(oriAngle - Rollrad);
+        target1_z = dist_O * math.cos(oriAngle - Rollrad);
+        var kx = math.abs(target1_x/7.25);
+        var kz = math.abs(target1_z/6);
+        if((kx > 1) or (kz > 1)){
+          if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+        }
+        if (radarON == 1){
+              me.lockMarker.setVisible(1);
+              #screen.log.write(sprintf("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", target1_x, target1_z, kx, kz, target1_x / kx, target1_x / kz, target1_z / kx, target1_z / kz));
+              me.lockMarker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
+      }
+      var distance = radar.GetTarget().get_range();
+      me.targetDistance.setText(sprintf("%.1f NM", distance));
+    } else {
+      me.targetDistance.setText(" ");
+    }
+
 #		#**************TARGET1 MARKER *********************#
-		var target1_x = getprop("instrumentation/radar2/targets/aircraft/h-offset");
-		var target1_z = getprop("instrumentation/radar2/targets/aircraft/v-offset");
+		var target1_x = getprop("instrumentation/radar2/targets/multiplayer/h-offset");
+		var target1_z = getprop("instrumentation/radar2/targets/multiplayer/v-offset");
 		if (target1_x or 0 > 0 and radarON ==1)
 		{
-			if (radarON == 1){
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
+      if (radarON == 1){
 						me.tgt1Marker.setVisible(1);
-						me.tgt1Marker.setTranslation(target1_x*18, -145+ -target1_z*15);}
+						me.tgt1Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
 #		#**************TARGET2 MARKER *********************#
-		var target2_x = getprop("instrumentation/radar2/targets/aircraft[1]/h-offset");
-		var target2_z = getprop("instrumentation/radar2/targets/aircraft[1]/v-offset");
+		var target2_x = getprop("instrumentation/radar2/targets/multiplayer[1]/h-offset");
+		var target2_z = getprop("instrumentation/radar2/targets/multiplayer[1]/v-offset");
 		if (target2_x or 0 > 0 and radarON ==1)
 		{
-			if (radarON == 1){
+			var dist_O = math.sqrt(math.pow(target2_x, 2)+math.pow(target2_z, 2));
+      var oriAngle = math.asin(target2_x / dist_O);
+      if(target2_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target2_x = dist_O * math.sin(oriAngle - Rollrad);
+      target2_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target2_x/7.25);
+      var kz = math.abs(target2_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target2_x = target2_x / kx;
+            target2_z = target2_z / kx;
+          }else{
+            target2_z = target2_z / kz;
+            target2_x = target2_x / kz;
+          }
+      }
+      if (radarON == 1){
 						me.tgt2Marker.setVisible(1);
-						me.tgt2Marker.setTranslation(target2_x*20, -145+ -target2_z*15);}
+            #screen.log.write(sprintf("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", target2_x, target2_z, kx, kz, target2_x / kx, target2_x / kz, target2_z / kx, target2_z / kz));
+						me.tgt2Marker.setTranslation(target2_x*18 - 10, -145+ -target2_z*15);}
 		}
 #		#**************TARGET3 MARKER *********************#
-		var target3_x = getprop("instrumentation/radar2/targets/aircraft[2]/h-offset");
-		var target3_z = getprop("instrumentation/radar2/targets/aircraft[2]/v-offset");
+		var target3_x = getprop("instrumentation/radar2/targets/multiplayer[2]/h-offset");
+		var target3_z = getprop("instrumentation/radar2/targets/multiplayer[2]/v-offset");
 		if (target3_x or 0 > 0 and radarON ==1)
 		{
-			if (radarON == 1){
+			var dist_O = math.sqrt(math.pow(target3_x, 2)+math.pow(target3_z, 2));
+      var oriAngle = math.asin(target3_x / dist_O);
+      if(target3_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target3_x = dist_O * math.sin(oriAngle - Rollrad);
+      target3_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target3_x/7.25);
+      var kz = math.abs(target3_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+          target3_x = target3_x / kx;
+          target3_z = target3_z / kx;
+        }else{
+          target3_z = target3_z / kz;
+          target3_x = target3_x / kz;
+        }
+      }
+      if (radarON == 1){
 						me.tgt3Marker.setVisible(1);
-						me.tgt3Marker.setTranslation(target3_x*20, -145+ -target3_z*15);}
+						me.tgt3Marker.setTranslation(target3_x*18 - 10, -145+ -target3_z*15);}
 		}
 #		#**************TARGET4 MARKER *********************#
-		var target4_x = getprop("instrumentation/radar2/targets/aircraft[3]/h-offset");
-		var target4_z = getprop("instrumentation/radar2/targets/aircraft[3]/v-offset");
+		var target4_x = getprop("instrumentation/radar2/targets/multiplayer[3]/h-offset");
+		var target4_z = getprop("instrumentation/radar2/targets/multiplayer[3]/v-offset");
 		if (target4_x or 0 > 0 and radarON ==1)
 		{
-			if (radarON == 1){
+			var dist_O = math.sqrt(math.pow(target4_x, 2)+math.pow(target4_z, 2));
+      var oriAngle = math.asin(target4_x / dist_O);
+      if(target4_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target4_x = dist_O * math.sin(oriAngle - Rollrad);
+      target4_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target4_x/7.25);
+      var kz = math.abs(target4_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+          target4_z = target4_z / kx;
+          target4_x = target4_z / kx;
+        }else{
+          target4_z = target4_z / kz;
+          target4_x = target4_x / kz;
+        }
+      }
+      if (radarON == 1){
 						me.tgt4Marker.setVisible(1);
-						me.tgt4Marker.setTranslation(target4_x*15, -145+ -target4_z*15);}
+						me.tgt4Marker.setTranslation(target4_x*18 - 10, -145+ -target4_z*15);}
 		}
 #		#**************TARGET5 MARKER *********************#
-		var target5_x = getprop("instrumentation/radar2/targets/aircraft[4]/h-offset");
-		var target5_z = getprop("instrumentation/radar2/targets/aircraft[4]/v-offset");
-		if (target5_x or 0 > 0 and radarON ==1)
+		target1_x = getprop("instrumentation/radar2/targets/multiplayer[4]/h-offset");
+		target1_z = getprop("instrumentation/radar2/targets/multiplayer[4]/v-offset");
+		if (target1_x or 0 > 0 and radarON ==1)
 		{
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
 			if (radarON == 1){
 						me.tgt5Marker.setVisible(1);
-						me.tgt5Marker.setTranslation(target5_x*20, -145+ -target5_z*15);}
+						me.tgt5Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
 #		#**************TARGET6 MARKER *********************#
-		var target6_x = getprop("instrumentation/radar2/targets/aircraft[5]/h-offset");
-		var target6_z = getprop("instrumentation/radar2/targets/aircraft[5]/v-offset");
-		if (target6_x or 0 > 0 and radarON ==1)
+		target1_x = getprop("instrumentation/radar2/targets/multiplayer[5]/h-offset");
+		target1_z = getprop("instrumentation/radar2/targets/multiplayer[5]/v-offset");
+		if (target1_x or 0 > 0 and radarON ==1)
 		{
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
 			if (radarON == 1){
 						me.tgt6Marker.setVisible(1);
-						me.tgt6Marker.setTranslation(target6_x*20, -145+ -target6_z*15);}
+						me.tgt6Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
 #		#**************TARGET7 MARKER *********************#
-		var target7_x = getprop("instrumentation/radar2/targets/aircraft[6]/h-offset");
-		var target7_z = getprop("instrumentation/radar2/targets/aircraft[6]/v-offset");
+		var target7_x = getprop("instrumentation/radar2/targets/tanker[0]/h-offset");
+		var target7_z = getprop("instrumentation/radar2/targets/tanker[0]/v-offset");
 		if (target7_x or 0 > 0 and radarON ==1)
 		{
 			if (radarON == 1){
 						me.tgt7Marker.setVisible(1);
-						me.tgt7Marker.setTranslation(target7_x*15, -145+ -target7_z*15);}
+						me.tgt7Marker.setTranslation(target7_x*18 - 10, -145+ -target7_z*15);}
 		}
 #		#**************TARGET8 MARKER *********************#
-		var target8_x = getprop("instrumentation/radar2/targets/aircraft[7]/h-offset");
-		var target8_z = getprop("instrumentation/radar2/targets/aircraft[7]/v-offset");
-		if (target8_x or 0 > 0 and radarON ==1)
+		target1_x = getprop("instrumentation/radar2/targets/Mig-28[2]/h-offset");
+		target1_z = getprop("instrumentation/radar2/targets/Mig-28[2]/v-offset");
+		if (target1_x or 0 > 0 and radarON ==1)
 		{
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
 			if (radarON == 1){
 						me.tgt8Marker.setVisible(1);
-						me.tgt8Marker.setTranslation(target8_x*20, -145+ -target8_z*15);}
+						me.tgt8Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
 #		#**************TARGET9 MARKER *********************#
-		var target9_x = getprop("instrumentation/radar2/targets/aircraft[8]/h-offset");
-		var target9_z = getprop("instrumentation/radar2/targets/aircraft[8]/v-offset");
-		if (target9_x or 0 > 0 and radarON ==1)
+		target1_x = getprop("instrumentation/radar2/targets/Mig-28[1]/h-offset");
+		target1_z = getprop("instrumentation/radar2/targets/Mig-28[1]/v-offset");
+		if (target1_x or 0 > 0 and radarON ==1)
 		{
-			if (radarON == 1){
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
+      if (radarON == 1){
 						me.tgt9Marker.setVisible(1);
-						me.tgt9Marker.setTranslation(target9_x*20, -145+ -target9_z*15);}
+						me.tgt9Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
 #		#**************TARGET10 MARKER *********************#
-		var target10_x = getprop("instrumentation/radar2/targets/aircraft[9]/h-offset");
-		var target10_z = getprop("instrumentation/radar2/targets/aircraft[9]/v-offset");
-		if (target10_x or 0 > 0 and radarON ==1)
+		target1_x = getprop("instrumentation/radar2/targets/Mig-28[0]/h-offset");
+		target1_z = getprop("instrumentation/radar2/targets/Mig-28[0]/v-offset");
+		if (target1_x or 0 > 0 and radarON ==1)
 		{
+			var dist_O = math.sqrt(math.pow(target1_x, 2)+math.pow(target1_z, 2));
+      var oriAngle = math.asin(target1_x / dist_O);
+      if(target1_z < 0){
+        oriAngle = 3.141592654 - oriAngle;
+      }
+      var Rollrad = (OurRoll.getValue() / 180) * 3.141592654;
+      target1_x = dist_O * math.sin(oriAngle - Rollrad);
+      target1_z = dist_O * math.cos(oriAngle - Rollrad);
+      var kx = math.abs(target1_x/7.25);
+      var kz = math.abs(target1_z/6);
+      if((kx > 1) or (kz > 1)){
+        if(kx > kz){
+            target1_x = target1_x / kx;
+            target1_z = target1_z / kx;
+          }else{
+            target1_z = target1_z / kz;
+            target1_x = target1_x / kz;
+          }
+      }
 			if (radarON == 1){
 						me.tgt10Marker.setVisible(1);
-						me.tgt10Marker.setTranslation(target10_x*20, -145+ -target10_z*15);}
+						me.tgt10Marker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
 		}
  
     var speed_error = 0;
