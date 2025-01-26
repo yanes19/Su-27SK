@@ -70,6 +70,7 @@ var HUD = {
     m.tgt9Marker = m.get_element("tgt9-marker");
     m.tgt10Marker = m.get_element("tgt10-marker");
     m.lockMarker = m.get_element("lock-marker");
+    #m.targetDistance = m.get_element("target-distance");
   
     #########################################    
     m.text =
@@ -77,7 +78,11 @@ var HUD = {
             .set("fill", "rgba(0,255,0,0.9)");
         
 
-
+    m.targetDistance =
+      m.text.createChild("text")
+            .setAlignment("center-top")
+            .setTranslation(220, 180)
+            .setFontSize(12,1.5);
  #Coordinares are from top left .setTranslation(left,Top)
     # Airspeed
     m.airspeed =
@@ -349,6 +354,10 @@ var HUD = {
               #screen.log.write(sprintf("%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", target1_x, target1_z, kx, kz, target1_x / kx, target1_x / kz, target1_z / kx, target1_z / kz));
               me.lockMarker.setTranslation(target1_x*18 - 10, -145+ -target1_z*15);}
       }
+      var distance = radar.GetTarget().get_range();
+      me.targetDistance.setText(sprintf("%.1f NM", distance));
+    } else {
+      me.targetDistance.setText(" ");
     }
 
 #		#**************TARGET1 MARKER *********************#
